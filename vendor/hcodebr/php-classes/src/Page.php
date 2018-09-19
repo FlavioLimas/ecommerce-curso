@@ -13,7 +13,7 @@ class Page {
 		"data"=>[]
 	];
 
-	public function__construct($opts = array()){
+	public function __construct($opts = array()){
 		/**
 		 * O ultimo argumento passado como parametro sobrescreve o primeiro 
 		 */
@@ -59,7 +59,7 @@ class Page {
 
 	}
 
-	public function__destruct(){
+	public function __destruct(){
 
 		$this->tpl->draw("footer");
 

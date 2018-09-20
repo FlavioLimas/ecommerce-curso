@@ -2,7 +2,7 @@
 <html lang="pt_BR">
 	<head>
 		<meta charset="UTF-8">
-		<title>Hcode Store</title>
+		<title>Dashboard</title>
 	</head>
 	<body>
 		

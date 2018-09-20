@@ -15,7 +15,8 @@ class Page {
 
 	public function __construct($opts = array()){
 		/**
-		 * O ultimo argumento passado como parametro sobrescreve o primeiro 
+		 * [$this->options description]
+		 * @var array_merge() O ultimo argumento passado como parametro sobrescreve o primeiro
 		 */
 		$this->options = array_merge($this->defaults, $opts);
 
@@ -39,7 +40,8 @@ class Page {
 	/** Percorrendo objeto para setar chave valor dos dados que serão enviados para o template (view)
 	 * @data Coleção dos dados que serão enviados array
 	 */
-	private function setData($data = array()){
+	private function setData($data = array())
+	{
 		foreach ($data as $key => $value) {
 			$this->tpl->assing($key, $value);
 		}
@@ -58,11 +60,11 @@ class Page {
 		return $this->tpl->draw($name, $returnHTML);
 
 	}
-
+	
 	public function __destruct(){
-
-		$this->tpl->draw("footer");
-
+	
+	$this->tpl->draw("footer");
+	
 	}
 
 

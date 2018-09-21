@@ -13,7 +13,7 @@ class Page {
 		"data"=>[]
 	];
 
-	public function __construct($opts = array()){
+	public function __construct($opts = array(), $tpl_dir = "/views/"){
 		/**
 		 * [$this->options description]
 		 * @var array_merge() O ultimo argumento passado como parametro sobrescreve o primeiro

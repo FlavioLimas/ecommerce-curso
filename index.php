@@ -33,10 +33,7 @@ $app->get('/admin', function(){
 
 	User::verifyLogin();
 
-	$page = new PageAdmin([
-		"header"=>false,
-		"footer"=>false
-	]);
+	$page = new PageAdmin();
 
 	$page->setTpl("index");
 });

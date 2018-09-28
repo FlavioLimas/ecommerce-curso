@@ -10,7 +10,8 @@ class User extends Model
 
 	const SESSION = "User";
 
-	public static function login($login, $password){
+	public static function login($login, $password)
+	{
 
 		$sql = new Sql();
 
@@ -47,7 +48,8 @@ class User extends Model
 
 	}
 
-	public static function verifyLogin($inadmin = true){
+	public static function verifyLogin($inadmin = true)
+	{
 
 		if (
 			!isset($_SESSION[User::SESSION])
@@ -64,10 +66,41 @@ class User extends Model
 
 	}
 
-	public static function logout(){
+	public static function logout()
+	{
 
 		$_SESSION[User::SESSION] = NULL;
 
+	}
+
+	public static function listAll()
+	{
+		
+		$sql = new Sql();
+
+		return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+
+	}
+
+	/**
+	 * [Salva os registros referente as classes Pessoas e Usuários chamando as respectivas procedures encarregadas de armazenar os valores] 
+	 * @return [type] [description]
+	 */
+	public function save()
+	{
+		$sql = new Sql();
+
+		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
+				$this->getdesperson(),
+				$this->getdeslogin(),
+				$this->getdespassword(),
+				$this->getdesemail(),
+				$this->getnrphone(),
+				$this->getinadmin()
+			)
+		);
+
+		$this->setData($results[0]);
 	}
 
 }

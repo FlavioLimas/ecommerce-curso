@@ -129,7 +129,7 @@ $app->get("/admin/users/create", function()
 /**
  * Rota para deletar usuario (Delete)
  */
-$app->get("admin/users/:iduser/delete", function($iduser)
+$app->get("/admin/users/:iduser/delete", function($iduser)
 {
 
 	// Verificar se esta logado
@@ -215,6 +215,30 @@ $app->post("/admin/users/:iduser", function($iduser)
 	exit;
 
 });
+
+/**
+ * Rota para esqueci a minha senha
+ */
+$app->get("/admin/forgot", function(){
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot");
+
+});
+
+/**
+ * Rota para pegar o endereço de e-mail que deve ser o destinatario da redefinição da senha
+ */
+$app->post("/admin/forgot", function(){
+
+	$user = User::getForgot($_POST["email"]);
+
+});
+
 
 // Executa $app
 $app->run();

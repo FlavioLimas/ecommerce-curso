@@ -66,6 +66,10 @@ class User extends Model
 
 	}
 
+	/**
+	 * [logout Efetua logout da area administrativa]
+	 * @return [type] [void]
+	 */
 	public static function logout()
 	{
 
@@ -73,6 +77,10 @@ class User extends Model
 
 	}
 
+	/**
+	 * [listAll Lista todos usuários]
+	 * @return [type] [Objeto com todos usuarios]
+	 */
 	public static function listAll()
 	{
 		
@@ -84,23 +92,73 @@ class User extends Model
 
 	/**
 	 * [Salva os registros referente as classes Pessoas e Usuários chamando as respectivas procedures encarregadas de armazenar os valores] 
-	 * @return [type] [description]
+	 * @return [type] [void]
 	 */
 	public function save()
 	{
 		$sql = new Sql();
 
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-				$this->getdesperson(),
-				$this->getdeslogin(),
-				$this->getdespassword(),
-				$this->getdesemail(),
-				$this->getnrphone(),
-				$this->getinadmin()
+				":desperson"=>$this->getdesperson(),
+				":deslogin"=>$this->getdeslogin(),
+				":despassword"=>$this->getdespassword(),
+				":desemail"=>$this->getdesemail(),
+				":nrphone"=>$this->getnrphone(),
+				":inadmin"=>$this->getinadmin()
 			)
 		);
 
 		$this->setData($results[0]);
+	}
+
+	public function get($iduser)
+	{
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser = :iduser", array(
+				":iduser"=>$iduser
+			)
+		);
+
+		$this->setData($results[0]);
+	}
+
+	/**
+	 * [update Atualiza todos os registros]
+	 * @return [type] [description]
+	 */
+	public function update()
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
+				":iduser"=>$this->getiduser(),
+				":desperson"=>$this->getdesperson(),
+				":deslogin"=>$this->getdeslogin(),
+				":despassword"=>$this->getdespassword(),
+				":desemail"=>$this->getdesemail(),
+				":nrphone"=>$this->getnrphone(),
+				":inadmin"=>$this->getinadmin()
+			)
+		);
+
+		$this->setData($results[0]);
+
+	}
+		
+	/**
+	* [delete Deleta registro a partir do ID]
+	* 
+	*/
+	public function delete()
+	{
+		$sql = new Sql();
+		
+		$sql->query("CALL sp_users_delete(:iduser)", array(
+				":iduser"=>$this->getiduser()
+			)
+		);
 	}
 
 }

@@ -135,6 +135,15 @@ $app->get("admin/users/:iduser/delete", function($iduser)
 	// Verificar se esta logado
 	User::verifyLogin();
 
+	$user = new User();
+
+	$user->get((int)$iduser);
+
+	$user->delete();
+
+	header("Location: /admin/users");
+	exit;
+
 });
 
 /**
@@ -146,10 +155,17 @@ $app->get("/admin/users/:iduser", function($iduser)
 	// Verificar se esta logado
 	User::verifyLogin();
 
+	$user = new User();
+
+	$user->get((int)$iduser);
+
 	$page = new PageAdmin();
 
 	// Chama template (HTML)
-	$page->setTpl("users-update");
+	$page->setTpl("users-update", array(
+			"user"=>$user->getValues()
+		)
+	);
 
 });
 
@@ -164,6 +180,9 @@ $app->post("/admin/users/create", function()
 	
 	$user = new User();
 
+	// Verificando se está checado o inadmin
+	$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
+
 	$user->setData($_POST);
 
 	$user->save();
@@ -173,13 +192,27 @@ $app->post("/admin/users/create", function()
 });
 
 /**
- * Rota para salvar a edição (Save Update)
+ * Rota para botão salvar a edição (Save na tela de Update)
  */
 $app->post("/admin/users/:iduser", function($iduser)
 {
 
 	// Verificar se esta logado
 	User::verifyLogin();
+
+	$user = new User();
+
+	// Verificando se está checado o inadmin
+	$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
+
+	$user->get((int)$iduser);
+
+	$user->setData($_POST);
+
+	$user->update();
+
+	header("Location: /admin/users");
+	exit;
 
 });
 

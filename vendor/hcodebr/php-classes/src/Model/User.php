@@ -9,6 +9,7 @@ class User extends Model
 {
 
 	const SESSION = "User";
+	const SECRET = "UdemyPhp7_Secret";
 
 	public static function login($login, $password)
 	{
@@ -190,25 +191,118 @@ class User extends Model
 			// Recuperando o endereço de email e o IP do usuário
 			$data = $results[0];
 
+			// Chamada de dados da tabela para recuperação de senha
 			$results2 = $sql->select("CALL sp_userspasswordsrecoveries_create(:iduser, :desip)", array(
 					":iduser"=>$data["iduser"],
 					":desip"=>$_SERVER["REMOTE_ADDR"]
 				)
 			);
-
+			// Se não retornar nada
 			if (count($results2) === 0) {
 				throw new \Exception("Não foi possível recuperar a senha.");
 			}else{
 
+				// Se retornar
 				$dataRecovery = $results2[0];
+				/**
+				 * [$code Recebe retorno da função que encripta o ID da tabela e gera um rach para enviar via e-mail para recuperção da senha]
+				 * @var [type]
+				 */
+				$code = base64_encode(
+					mcrypt_encrypt(
+						MCRYPT_RIJNDAEL_128, 
+						User::SECRET, 
+						$dataRecovery["idrecovery"],
+						MCRYPT_MODE_ECB
+					)
+				);
 
-				
+				// var_dump($code);
+
+				$link = "http://www.ecommerce.com.br/admin/forgot/reset?code=$code";
+
+				$mailer = new Mailer(
+					$data["desemail"], 
+					$data["desperson"], 
+					"Redefinir Senha da Udemy Store", 
+					"forgot", 
+					array(
+						"name"=>$data["desperson"],
+						"link"=>$link
+					)
+				);
+
+				$mailer->send();
+
+				return $data;
 
 			}
 
 		}
 
 		$this->setData($results[0]);
+
+	}
+
+	public static function validForgotDecrypt($code)
+	{
+
+		$idrecovery = mcrypt_decrypt(
+			MCRYPT_RIJNDAEL_128,
+			User::SECRET,
+			base64_decode($code),
+			MCRYPT_MODE_ECB
+		);
+
+		$sql = new Sql();
+
+		$reuslts = $sql->select("
+			SELECT *
+			FROM tb_userspasswordsrecoveries a
+			INNER JOIN tb_users b USING(iduser)
+			INNER JOIN tb_persons c USING(idperson)
+			WHERE idrecovery = :idrecovery
+			AND a.dtrecovery IS NULL
+			AND DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();
+		", array(
+				"idrecovery"=>$idrecovery
+			)
+		);
+
+		if (count($results) === 0) {
+			throw new \Exception("Não foi possível recuperar a senha.");
+			
+		}else{
+
+			return results[0];
+
+		}
+
+	}
+
+	/**
+	 * [setForgotUsed Seta o date time da utilização do rash de redefinição da senha]
+	 */
+	public static function setForgotUsed($idrecovery){
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE idrecovery = :idrecovery", array(
+				":idrecovery"=>$idrecovery
+			)
+		);
+
+	}
+
+	public function setPassword($password){
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", array(
+				":password"=>$password,
+				":iduser"=>$this->getiduser()
+			)
+		);
 
 	}
 

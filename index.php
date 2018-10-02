@@ -237,8 +237,72 @@ $app->post("/admin/forgot", function(){
 
 	$user = User::getForgot($_POST["email"]);
 
+	header("Location: /admin/forgot/sent");
+
 });
 
+/**
+ * Rota para enviar o e-mail de recuperação de senha
+ */
+$app->get("/admin/forgot/sent", function(){
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot-sent");
+
+});
+
+/**
+ * Rota para validar o rash rgerado e que permite a alteração da senha
+ */
+$app->get("/admin/forgot/reset", function(){
+
+	// Valida o codigo (rash) que permite o reset senha dentro do periodo de uma hora
+	$user = User::validForgotDecrypt($_GET["code"]);
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot-reset", array(
+			"name"=>$user["desperson"],
+			"code"=>$_GET["code"]
+		)
+	);
+
+});
+
+$app->post("/admin/forgot/reset", function(){
+
+	// Valida o codigo (rash) que permite o reset senha dentro do periodo de uma hora
+	$forgot = User::validForgotDecrypt($_POST["code"]);
+
+	// Seta o date time da utilização do rash de redefinição da senha
+	User::setForgotUsed($forgot["idrecovery"]);
+
+	$user = new User();
+
+	$user->get((int)$forgot["iduser"]);
+
+	// Encriptando a senha
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+		"cost"=>12
+	]);
+
+	$user->setPassword($password);
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+	]);
+
+	$page->setTpl("forgot-reset-success");
+
+});
 
 // Executa $app
 $app->run();

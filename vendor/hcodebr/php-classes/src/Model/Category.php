@@ -4,6 +4,7 @@ namespace Hcode\Model;
 
 use \Hcode\DB\Sql;
 use \Hcode\Model;
+use \Hcode\Mailer;
 
 class Category extends Model
 {
@@ -63,6 +64,31 @@ class Category extends Model
 				':idcategory'=>$this->getidcategory()
 			]
 		);
+	}
+
+	/**
+	 * [updateFile Atualiza arquivos responsavel por renderizar as categorias no footer do site]
+	 * @return [type] [description]
+	 */
+	public static function updateFile()
+	{
+		$categories = Category::listAll();
+
+		$html = [];
+
+		foreach ($categories as $row) {
+			
+			array_push(
+				$html,
+				'<li><a href="/category/' . $row["idcategory"] . '">' . $row['descategory'] . '</a></li>'
+			);
+
+		}
+
+		// Salvando arquivo
+		file_put_contents(
+			$_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", data
+		)
 	}
 
 }

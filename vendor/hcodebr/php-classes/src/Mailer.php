@@ -26,7 +26,7 @@ class Mailer
 		
 		// config template
 		$config = array(
-			"tpl_dir"       => $_SERVER["DOCUMENT_ROOT"]."views/email/",
+			"tpl_dir"       => $_SERVER["DOCUMENT_ROOT"]."/views/email/",
 			"cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
 			"debug"         => false // set to false to improve the speed
 		);

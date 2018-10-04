@@ -336,7 +336,7 @@ $app->get("/admin/categories/create", function(){
 });
 
 /**
- * Rota para salvar Categorias
+ * Rota para o botão de salvar as categorias 
  */
 $app->post("/admin/categories/create", function(){
 
@@ -353,6 +353,9 @@ $app->post("/admin/categories/create", function(){
 
 });
 
+/**
+ * Rota para deletar categoria
+ */
 $app->get("/admin/categories/:idcategory/delete", function($idcategory){
 
 	User::verifyLogin();
@@ -368,6 +371,9 @@ $app->get("/admin/categories/:idcategory/delete", function($idcategory){
 
 });
 
+/**
+ * Rota que integra dados da categoria do admin para ao front
+ */
 $app->get("/admin/categories/:idcategory", function($idcategory){
 
 	User::verifyLogin();
@@ -385,6 +391,9 @@ $app->get("/admin/categories/:idcategory", function($idcategory){
 
 });
 
+/**
+ * Rota para salvar o cadastro das categorias do admin para banco
+ */
 $app->post("/admin/categories/:idcategory", function($idcategory){
 
 	User::verifyLogin();
@@ -403,7 +412,7 @@ $app->post("/admin/categories/:idcategory", function($idcategory){
 });
 
 /**
- * Rota para categoria
+ * Rota que passa o ID da Categoria para pagina dos respectivos produtos
  */
 $app->get("/categories/:idcategory", function($idcategory){
 

@@ -6,7 +6,7 @@ use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
 
-class Category extends Model
+class Products extends Model
 {
 
 	/**
@@ -18,7 +18,7 @@ class Category extends Model
 		
 		$sql = new Sql();
 
-		return $sql->select("SELECT * FROM tb_categories ORDER BY descategory");
+		return $sql->select("SELECT * FROM tb_products ORDER BY desproduct");
 
 	}
 
@@ -31,10 +31,10 @@ class Category extends Model
 
 		$sql = new Sql();
 
-		$results = $sql->select("CALL sp_categories_save(:idcategory, :descategory)",
+		$results = $sql->select("CALL sp_products_save(:idproduct, :desproduct)",
 			array(
-				":idcategory"=>$this->getidcategory(),
-				"descategory"=>$this->getdescategory()
+				":idproduct"=>$this->getidproduct(),
+				"desproduct"=>$this->getdescategory()
 			)
 		);
 

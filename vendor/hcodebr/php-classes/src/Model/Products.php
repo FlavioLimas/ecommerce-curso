@@ -31,10 +31,16 @@ class Products extends Model
 
 		$sql = new Sql();
 
-		$results = $sql->select("CALL sp_products_save(:idproduct, :desproduct)",
+		$results = $sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheigth, :vllength, :vlweigth, :desurl)",
 			array(
 				":idproduct"=>$this->getidproduct(),
-				"desproduct"=>$this->getdescategory()
+				":desproduct"=>$this->getdescategory(),
+				":vlprice"=>$this->getvlprice(),
+				":vlwidth"=>$this->getvlwidth(),
+				":vlheigth"=>$this->getvlheigth(),
+				":vllength"=>$this->getvllength(),
+				":vlweigth"=>$this->getvlweigth(),
+				":desurl"=>$this->getdesurl()
 			)
 		);
 

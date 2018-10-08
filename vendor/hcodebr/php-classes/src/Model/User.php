@@ -172,7 +172,7 @@ class User extends Model
 			SELECT *
 			FROM
 			    TB_PERSONS a
-			        INNER JOIN
+			INNER JOIN
 			    TB_USERS b USING (idperson)
 			WHERE
 			    a.desemail = :email;
@@ -212,7 +212,7 @@ class User extends Model
 				$code = base64_encode(
 					mcrypt_encrypt(
 						MCRYPT_RIJNDAEL_128, 
-						User::SECRET, 
+						User::SECRET, // Esse parametro deve ter no minimo 16 caracteres
 						$dataRecovery["idrecovery"],
 						MCRYPT_MODE_ECB
 					)
@@ -257,16 +257,19 @@ class User extends Model
 
 		$sql = new Sql();
 
-		$reuslts = $sql->select("
+		$results = $sql->select("
 			SELECT *
 			FROM tb_userspasswordsrecoveries a
 			INNER JOIN tb_users b USING(iduser)
 			INNER JOIN tb_persons c USING(idperson)
-			WHERE idrecovery = :idrecovery
-			AND a.dtrecovery IS NULL
-			AND DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();
+			WHERE 
+				a.idrecovery = :idrecovery
+			AND 
+				a.dtrecovery IS NULL
+			AND 
+				DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();
 		", array(
-				"idrecovery"=>$idrecovery
+				":idrecovery"=>$idrecovery
 			)
 		);
 

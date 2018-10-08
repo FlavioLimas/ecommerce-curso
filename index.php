@@ -66,8 +66,16 @@ $app->get('/admin/login', function()
 $app->post('/admin/login', function()
 {
 
+	// Encriptando a senha
+	/*$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+		"cost"=>12
+	]);*/
+	$password = $_POST["password"];
+	
+	User::login($_POST["login"], $password);
+
 	// Validando login (usuario e senha)
-	User::login($_POST["login"], $_POST["password"]);
+	// User::login($_POST["login"], $_POST["password"]);
 
 	header("Location: /admin");
 	exit;
@@ -239,6 +247,7 @@ $app->post("/admin/forgot", function(){
 	$user = User::getForgot($_POST["email"]);
 
 	header("Location: /admin/forgot/sent");
+	exit;
 
 });
 

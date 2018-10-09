@@ -92,8 +92,24 @@ $app->post("/admin/produtcs/:idproduct", function($idproduct){
 
 	header('Location: /admin/products');
 	exit;
-	
+
 });
 
+/**
+ * Rota para Deletar produto
+ */
+$app->get("/admin/products/:idproduct/delete", function($idproduct){
+
+	User::verifyLogin();
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$product->delete();
+
+	header('Location: /admin/products');
+	exit;
+});
 
  ?>

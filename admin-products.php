@@ -5,14 +5,14 @@ use \Hcode\Model\User;
 use \Hcode\Model\Product;
 
 /**
- * Rota para Produtos
+ * Rota para listagem de Produtos
  */
 $app->get("/admin/products", function(){
 	
 	// Verificando se o usuario esta logado
 	User::verifyLogin();
 
-	$products = Products::listAll();
+	$products = Product::listAll();
 
 	$page = new PageAdmin();
 
@@ -24,6 +24,76 @@ $app->get("/admin/products", function(){
 
 });
 
+/**
+ * Rota para criação de produtos
+ */
+$app->get("/admin/products/create", function(){
+
+	User::verifyLogin();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("products-create");
+});
+
+/**
+ * Rota para salvar o produto criado
+ */
+$app->post("/admin/products/create", function(){
+
+	User::verifyLogin();
+
+	$product = new Product();
+
+	$product->setData($_POST);
+
+	$product->save();
+
+	header("Location: /admin/products");
+	exit;
+});
+
+/**
+ * Rota para editar os produtos
+ */
+$app->get("/admin/products/:idproduct", function($idproduct){
+
+	User::verifyLogin();
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$page = new PageAdmin();
+
+	$page->setTpl("products-update", [
+		'product'=>$product->getValues()
+		]
+	);
+});
+
+/**
+ * Rota do botão salvar do formulario de edição dos produtos
+ */
+$app->post("/admin/produtcs/:idproduct", function($idproduct){
+
+	User::verifyLogin();
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$product->setData($_POST);
+
+	$product->save();
+
+	// Upload do file
+	$product->setPhoto($_FILES["file"]);
+
+	header('Location: /admin/products');
+	exit;
+	
+});
 
 
  ?>

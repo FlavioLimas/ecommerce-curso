@@ -31,15 +31,15 @@ class Product extends Model
 
 		$sql = new Sql();
 
-		$results = $sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheigth, :vllength, :vlweigth, :desurl)",
+		$results = $sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :desurl)",
 			array(
 				":idproduct"=>$this->getidproduct(),
-				":desproduct"=>$this->getdescategory(),
+				":desproduct"=>$this->getdesproduct(),
 				":vlprice"=>$this->getvlprice(),
 				":vlwidth"=>$this->getvlwidth(),
-				":vlheigth"=>$this->getvlheigth(),
+				":vlheight"=>$this->getvlheight(),
 				":vllength"=>$this->getvllength(),
-				":vlweigth"=>$this->getvlweigth(),
+				":vlweight"=>$this->getvlweight(),
 				":desurl"=>$this->getdesurl()
 			)
 		);
@@ -70,6 +70,109 @@ class Product extends Model
 				':idproduct'=>$this->getidproduct()
 			]
 		);
+
+	}
+
+	/**
+	 * [checkPhoto description Verifica se exite uma foto ou não no caminho expecifico]
+	 * @return [string] [description] caminho do arquivo
+	 */
+	public function checkPhoto()
+	{
+
+		if (
+			file_exists(
+				$_SERVER['DOCUMENT_ROOT'] .
+				DIRECTORY_SEPARATOR .
+				"res" .
+				DIRECTORY_SEPARATOR .
+				"site" .
+				DIRECTORY_SEPARATOR .
+				"img" .
+				DIRECTORY_SEPARATOR .
+				"products" .
+				DIRECTORY_SEPARATOR .
+				$this->getidproduct() .
+				".jpg"
+			)
+		) {
+			
+			$url = "/res/site/img/products/" . $this->getidproduct() . ".jpg";
+		} else {
+			// Se não tiver nenhuma foto cadastrada retornará uma foto padrão
+			$url = "/res/site/img/products/product.jpg";
+		}
+
+		$this->setdesphoto($url);
+
+	}
+
+	/**
+	 * [getValues description] Sobreescrevendo metodo getValues sómente para classe Product para checar se a foto exite 
+	 * @return [Data] [description] dados da banco
+	 */
+	public function getValues()
+	{
+
+		// Verificar se tem uma foto ou não
+		$this->checkPhoto();
+
+		// parent permite referenciar ao metodo original escrito na classe pai (Model) para que assim possa ser rescrito nessa classe
+		$values = parent::getValues();
+
+		return $values;
+
+	}
+
+	/**
+	 * [setPhoto description] Efetuando upload do arquivo para o server
+	 * @param [type] $file [description] imagem para upload
+	 */
+	public function setPhoto($file)
+	{
+
+		// Detectando a extensão do arquivo, convertendo em array e separando a partir do ponto
+		$extension = explode('.', $file['file']);
+		// A extensão é a umtima posição do array
+		$extension = end($extension);
+		/**
+		 * Criando imagem .jpg idenpedente da extensão do arquivo enviado
+		 */
+		switch ($extension){
+
+			case "jpg":
+			case "jpeg":
+			$image = imagecreatefromjpeg($file["tmp_name"]);
+			break;
+
+			case "gif":
+			$image = imagecreatefromgif($file["tmp_name"]);
+			break;
+
+			case "png":
+			$image = imagecreatefrompng($file["tmp_name"]);
+			break;
+
+		}
+
+		$dist = $_SERVER['DOCUMENT_ROOT'] .
+				DIRECTORY_SEPARATOR .
+				"res" .
+				DIRECTORY_SEPARATOR .
+				"site" .
+				DIRECTORY_SEPARATOR .
+				"img" .
+				DIRECTORY_SEPARATOR .
+				"products" .
+				DIRECTORY_SEPARATOR .
+				$this->getidproduct() .
+				".jpg";
+
+		imagejpeg($image, $dist);
+
+		imagedestroy($image);
+
+		$this->checkPhoto();
 
 	}
 

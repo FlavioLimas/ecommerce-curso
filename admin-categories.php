@@ -5,7 +5,7 @@ use \Hcode\Model\User;
 use \Hcode\Model\Category;
 
 /**
- * Rota para Categorias
+ * Rota para listar as Categorias
  */
 $app->get("/admin/categories", function(){
 

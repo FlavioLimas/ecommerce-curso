@@ -132,7 +132,7 @@ class Product extends Model
 	{
 
 		// Detectando a extensão do arquivo, convertendo em array e separando a partir do ponto
-		$extension = explode('.', $file['file']);
+		$extension = explode('.', $file['name']);
 		// A extensão é a umtima posição do array
 		$extension = end($extension);
 		/**

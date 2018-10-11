@@ -97,6 +97,26 @@ class Category extends Model
 		);
 	}
 
+	/**
+	 * [getProducts description] Metodo que verifica do banco a listagem de produtos relacionados e os que não são relacionados a categoria
+	 * @param  boolean [$reLated recebe os produtos relacionados]
+	 * @return [bool]           [Por default true]
+	 */
+	public function getProducts($reLated = true)
+	{
+
+		$sql = new Sql();
+
+		if ($related === true) {
+			
+			$sql->select("");
+
+		}else{
+
+		}
+
+	}
+
 }
 
 

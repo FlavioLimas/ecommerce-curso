@@ -17,6 +17,8 @@ $app->config('debug', true);
  */
 // Rota da home page
 require_once("site.php");
+// Funções compartilhadas
+require_once("functions.php");
 // Rotas relacionadas ao Admin (Login e esqueci minha senha)
 require_once("admin.php");
 // Rotas Admin relacionadas aos Usuários

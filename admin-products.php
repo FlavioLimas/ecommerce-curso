@@ -75,7 +75,7 @@ $app->get("/admin/products/:idproduct", function($idproduct){
 /**
  * Rota do botão salvar do formulario de edição dos produtos
  */
-$app->post("/admin/produtcs/:idproduct", function($idproduct){
+$app->post("/admin/products/:idproduct", function($idproduct){
 
 	User::verifyLogin();
 

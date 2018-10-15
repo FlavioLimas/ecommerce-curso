@@ -2,6 +2,7 @@
 
 use \Hcode\Page;
 use \Hcode\Model\Product;
+use \Hcode\Model\Category;
 
 /**
  * Rota para o Index do site
@@ -34,7 +35,7 @@ $app->get("/categories/:idcategory", function($idcategory){
 
 	$page->setTpl("category", [
 		'category'=>$category->getValues(),
-		'products'=>[]
+		'products'=>Product::checkList($category->getProducts())
 		]
 	);
 

@@ -21,7 +21,7 @@
         <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                <h3 class="box-title">Todos os Produtos</h3>
+                <h3 class="box-title">Produtos nas Outras Categorias</h3>
                 </div>
                 <!-- /.box-header -->
                 <!-- form start -->

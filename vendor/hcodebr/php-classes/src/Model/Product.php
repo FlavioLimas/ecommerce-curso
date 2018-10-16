@@ -190,6 +190,38 @@ class Product extends Model
 
 	}
 
+	/**
+	 * [getFromURL Responsável  retornar o campo desurl que está salvo no banco]
+	 * @param  [String] $desurl [Parametro recebido de quem chamou o metodo; deve ser igual ao cadastrado no banco]
+	 * @return [Array]         [Linha com a url cadastrada no banco ]
+	 */
+	public function getFromURL($desurl)
+	{
+
+		$sql = new Sql();
+
+		$rows = $sql->select("SELECT * FROM TB_PRODUCTS WHERE DESURL = :desurl LIMIT 1", [
+				'desurl'=>$desurl
+			]
+		);
+
+		$this->setData($rows[0]);
+
+	}
+
+	public function getCategories()
+	{
+
+		$sql = new Sql();
+
+		return $sql->select("
+			SELECT * FROM TB_CATEGORIES A INNER JOIN TB_PRODUCTSCATEGORIES B ON A.IDCATEGORY = B.IDCATEGORY WHERE B.IDPRODUCT = :idproduct
+		", [
+				':idproduct'=>$this->getidproduct()
+			]
+		);
+	}
+
 }
 
 

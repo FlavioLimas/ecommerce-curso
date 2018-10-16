@@ -182,6 +182,43 @@ class Category extends Model
 
 	}
 
+	/**
+	 * [getProductsPage Gerenciamento da paginação da pagina de produtos]
+	 * @param  integer $page         [Ordem de eibição da pagina]
+	 * @param  integer $itemsPerPage [Quantos itens serão apresentados por página]
+	 * @return [Array]                [Lista com todos os produtos; Contagem total dos produtos; Quantidade de paginação que iremos ter]
+	 */
+	public function getProductsPage($page = 1, $itemsPerPage = 8)
+	{
+
+		$start = ($page - 1) * $itemsPerPage;
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			SELECT 
+		    SQL_CALC_FOUND_ROWS *
+			FROM
+			    TB_PRODUCTS A
+			INNER JOIN TB_PRODUCTSCATEGORIES B ON A.IDPRODUCT = B.IDPRODUCT
+			INNER JOIN TB_CATEGORIES C ON C.IDCATEGORY = B.IDCATEGORY
+			WHERE C.IDCATEGORY = :idcategory
+			LIMIT $start, $itemsPerPage;
+		", [
+				':idcategory'=>$this->getidcategory()
+			]
+		);
+
+		$resultTotal = $sql->select ("SELECT FOUND_ROWS() AS NRTOTAL;");
+
+		return [
+			'data'=>Product::checkList($results),
+			'total'=>(int)$resultTotal[0]["NRTOTAL"],
+			'pages'=>ceil($resultTotal[0]["NRTOTAL"] / $itemsPerPage)
+		];
+
+	}
+
 }
 
 

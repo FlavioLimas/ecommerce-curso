@@ -7,8 +7,8 @@ use Rain\Tpl;
 class Mailer
 {
 
-	const USERMAIL = "";
-	const PASSWORD = "";
+	const USERMAIL = "anunciacao.flavio@gmail.com";
+	const PASSWORD = "pk@reta11";
 	const NAME_FROM = "Udemy Store";
 
 	private $mail;

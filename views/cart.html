@@ -37,22 +37,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    {loop="$products"}
                                     <tr class="cart_item">
                                         <td class="product-remove">
-                                            <a title="Remove this item" class="remove" href="#">×</a> 
+                                            <a title="Remove this item" class="remove" href="/cart/{$value.idproduct}/remove">×</a> 
                                         </td>
 
                                         <td class="product-thumbnail">
-                                            <a href="#"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="/res/site/img/product-thumb-2.jpg"></a>
+                                            <a href="/products/{value.desurl}"><img width="145" height="145" alt="poster_1_up" class="shop_thumbnail" src="{$value.desphoto}"></a>
                                         </td>
 
                                         <td class="product-name">
-                                            <a href="#">Ship Your Idea</a> 
+                                            <a href="/products/{value.desurl}">{value.desproduct}</a> 
                                         </td>
 
                                         <td class="product-price">
-                                            <span class="amount">$700.00</span> 
+                                            <span class="amount">{value.vlprice}</span> 
                                         </td>
 
                                         <td class="product-quantity">
@@ -67,7 +67,7 @@
                                             <span class="amount">$700.00</span> 
                                         </td>
                                     </tr>
-                                    
+                                    {/loop}
                                 </tbody>
                             </table>
 

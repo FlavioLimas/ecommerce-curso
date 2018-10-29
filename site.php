@@ -3,6 +3,7 @@
 use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
+use \Hcode\Model\Cart;
 
 /**
  * Rota para o Index do site
@@ -15,9 +16,9 @@ $app->get('/', function(){
 
 	// Chamada do template (HTML)
 	$page->setTpl("index", 
-	[
-		'products'=>Product::checkList($products)
-	]
+		[
+			'products'=>Product::checkList($products)
+		]
 	);
 
 });
@@ -82,11 +83,69 @@ $app->get("/products/:desurl", function($desurl){
  */
 $app->get("/cart", function(){
 
+	$cart = Cart::getFromSession();
+
 	$page = new Page();
 
-	$page->setTpl("cart");
+	$page->setTpl("cart", [
+		'cart'=>$cart->getValues(),
+		'products'=>$cart->getProducts()
+	]);
 
 });
 
+/**
+ * Add Produto ao carrinho
+ */
+$app->get("/cart/:idproduct/add", function($idproduct){
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$cart = Cart::getFromSession();
+
+	$cart->addProduct($product);
+
+	header("Location: /cart");
+	exit;
+
+});
+
+/**
+ * Remover 1 produto do carrinho
+ */
+$app->get("/cart/:idproduct/minus", function($idproduct){
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$cart = Cart::getFromSession();
+
+	$cart->removeProduct($product);
+
+	header("Location: /cart");
+	exit;
+
+});
+
+/**
+ * Remove todos os produtos do carrinho
+ */
+$app->get("/cart/:idproduct/remove", function($idproduct){
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$cart = Cart::getFromSession();
+
+	$cart->removeProduct($product, true);
+
+	header("Location: /cart");
+	exit;
+
+});
 
  ?>

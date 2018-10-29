@@ -16,13 +16,49 @@ class User extends Model
 	{
 		$user = new User();
 
-		if (isset($_SESSION[User::SESSION] && (int)$_SESSION[User::SESSION]['iduser'] > 0)) {
+		// if (isset($_SESSION[User::SESSION] && (int)$_SESSION[User::SESSION]['iduser'] > 0))
+		
+		if (isset($_SESSION[User::SESSION]) && (int)$_SESSION[User::SESSION]['iduser'] > 0) {
 
 			$user->setData($_SESSION[User::SESSION]);
 
 		}
 
 		return $user;
+
+	}
+
+	public static function checkLogin($inadmin = true)
+	{
+
+		if (
+			!isset($_SESSION[User::SESSION])
+			||
+			!$_SESSION[User::SESSION]
+			||
+			!(int)$_SESSION[User::SESSION]["iduser"] > 0
+		) {
+			
+			// Não está logado
+			return false;
+
+		} else{ // Está logado
+
+			if ($inadmin === true && (bool)$_SESSION[User::SESSION]["inadmin"] === true) {
+				
+				return true;
+
+			} else if ($inadmin === false){
+
+				return true;
+
+			} else{ // Não está logado
+
+				return false;
+
+			}
+
+		}
 
 	}
 
@@ -67,15 +103,7 @@ class User extends Model
 	public static function verifyLogin($inadmin = true)
 	{
 
-		if (
-			!isset($_SESSION[User::SESSION])
-			||
-			!$_SESSION[User::SESSION]
-			||
-			!(int)$_SESSION[User::SESSION]["iduser"] > 0
-			||
-			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin
-		) {
+		if (User::checkLogin($inadmin)) {
 			header("Location: /admin/login");
 			exit;
 		}

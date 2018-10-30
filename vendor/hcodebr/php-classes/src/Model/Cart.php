@@ -140,6 +140,8 @@ class Cart extends Model
 				':idproduct'=>$product->getidproduct()
 			]
 		);
+
+		$this->getCalculateTotal();
 	}
 
 	/**
@@ -169,6 +171,8 @@ class Cart extends Model
 
 		}
 
+		$this->getCalculateTotal();
+
 	}
 
 	/**
@@ -193,6 +197,93 @@ class Cart extends Model
 		);
 
 		return Product::checklist($rows);
+
+	}
+
+	public function getProductsTotals()
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			SELECT SUM(vlprice) AS vlprice, SUM(vlwidth) AS vlwidth, SUM(vlheight) AS vlheight, SUM(vllength) AS vllength, SUM(vlweight) AS vlweight, COUNT(*) AS nrqtd
+			FROM TB_PRODUCTS A
+			INNER JOIN TB_CARTSPRODUCTS B ON A.IDPRODUCT = B.IDPRODUCT
+			WHERE B.IDCART = :idcart
+			AND B.DTREMOVED IS NULL
+		", [
+			':idcart'=>$this->getidcart()
+			]
+		);
+
+		if(count($results) > 0){
+			
+			return $results[0];
+
+		} else {
+
+			return [];
+
+		}
+
+	}
+
+	/**
+	 * [setFreight Serviço (API dos correios) que consulta do valor do frete]
+	 * @param [string] $nrzipcode [numero do cep]
+	 */
+	public function setFreight($nrzipcode)
+	{
+
+		$nrzipcode = str_replace('-', '', $nrzipcode);
+
+		$totals = $this->getProductsTotals();
+
+		if (totals['nrqtd'] > 0) {
+			
+			// Função que recebe XML
+			simplexml_load_file("http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?");
+			
+		} else {
+
+
+
+		}
+
+	}
+
+	public function updateFreight()
+	{
+
+		if ($this->getdeszipcode() != '') {
+			
+			$this->setFreight($this->getdeszipcode());
+
+		}
+
+	}
+
+	/**
+	 * Sobrescrevendo o metodo que passsa os valores para o template TPL e adicionando as informações dos totais
+	 */
+	public function getValues()
+	{
+
+		$this->getCalculateTotal();
+
+		return parent::getValues();
+
+	}
+
+	public function getCalculateTotal()
+	{
+
+		$this->updateFreight();
+
+		$totals = $this->getProductsTotals();
+
+		$this->setvlsubtotal($totals['vlprice']);
+		$this->setvltotal($totals['vlprice'] + $this-getvlfreight());
 
 	}
 

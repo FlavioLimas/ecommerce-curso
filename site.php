@@ -154,4 +154,18 @@ $app->get("/cart/:idproduct/remove", function($idproduct){
 
 });
 
+/**
+ * Rota que vai receber as infos do serviço de consulta do frete (API)
+ */
+$app->post("/cart/freight", function(){
+
+	$cart = Cart::getFromSession();
+
+	$cart->setFreight($_POST['zipcode']);
+
+	header("Location: /cart");
+	exit;
+
+});
+
  ?>

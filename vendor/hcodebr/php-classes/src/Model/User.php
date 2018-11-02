@@ -9,15 +9,15 @@ use \Hcode\Mailer;
 class User extends Model
 {
 
-	const SESSION = "User";
-	const SECRET = "UdemyPhp7_Secret";
+	const SESSION 			= "User";
+	const SECRET 			= "UdemyPhp7_Secret";
+	const ERROR 			= "UserError";
+	const ERROR_REGISTER 	= "UserErrorRegister";
 
 	public static function getFromSession()
 	{
 		$user = new User();
-
-		// if (isset($_SESSION[User::SESSION] && (int)$_SESSION[User::SESSION]['iduser'] > 0))
-		
+	
 		if (isset($_SESSION[User::SESSION]) && (int)$_SESSION[User::SESSION]['iduser'] > 0) {
 
 			$user->setData($_SESSION[User::SESSION]);
@@ -103,8 +103,14 @@ class User extends Model
 	public static function verifyLogin($inadmin = true)
 	{
 
-		if (User::checkLogin($inadmin)) {
-			header("Location: /admin/login");
+		if (!User::checkLogin($inadmin)) {
+
+			if ($inadmin) {
+				header("Location: /admin/login");
+			}
+			if (!$inadmin) {
+				header("Location:/login");
+			}
 			exit;
 		}
 
@@ -349,6 +355,38 @@ class User extends Model
 				":iduser"=>$this->getiduser()
 			)
 		);
+
+	}
+
+	public static function setError($msg)
+	{
+
+		$_SESSION[User::ERROR] = $msg;
+
+	}
+
+	public static function getError()
+	{
+
+		$msg = (isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : '';
+
+		User::clearError();
+
+		return $msg;
+
+	}
+
+	public static function clearError()
+	{
+
+		$_SESSION[User::ERROR] = NULL;
+
+	}
+
+	public static function serErrorRegister($msg)
+	{
+
+		$_SESSION[User::ERROR_REGISTER] = $msg;
 
 	}
 

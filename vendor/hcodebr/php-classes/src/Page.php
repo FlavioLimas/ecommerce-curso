@@ -51,7 +51,7 @@ class Page {
 
 
 	/**Função responsável por alimentar o conteúdo da página
-	 * @name nome do arquivo responsário por alimentar o conteúdo string
+	 * @name nome do arquivo responsável por alimentar o conteúdo string
 	 * @data Os dados que serão alimentados na página array
 	 * @returnHTML O HTML que alimentará a página OBS: que por padrão é false boolean
 	 */

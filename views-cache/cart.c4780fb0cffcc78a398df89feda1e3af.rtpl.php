@@ -8,7 +8,9 @@
             </div>
         </div>
     </div>
-</div> <!-- End Page title area -->
+</div>
+
+<!-- End Page title area -->
 
 <div class="single-product-area">
     <div class="zigzag-bottom"></div>
@@ -53,19 +55,19 @@
                                         </td>
 
                                         <td class="product-price">
-                                            <span class="amount">R$<?php echo formatPrice(value.vlprice); ?></span> 
+                                            <span class="amount">R$<?php echo formatPrice((float)value.vlprice); ?></span> 
                                         </td>
 
                                         <td class="product-quantity">
                                             <div class="quantity buttons_added">
-                                                <input type="button" class="minus" value="-" onclick="window.location.href = '/cart/{value.idproduct}/mainus'">
+                                                <input type="button" class="minus" value="-" onclick="window.location.href = '/cart/{value.idproduct}/minus'">
                                                 <input type="number" size="4" class="input-text qty text" title="Qty" value="{value.nrqtd}" name="nrqtd" min="0" step="1">
                                                 <input type="button" class="plus" value="+" onclick="window.location.href = '/cart/{value.idproduct}/add'">
                                             </div>
                                         </td>
 
                                         <td class="product-subtotal">
-                                            <span class="amount">R$<?php echo formatPrice(value.vltotal); ?></span> 
+                                            <span class="amount">R$<?php echo formatPrice((float)value.vltotal); ?></span> 
                                         </td>
                                     </tr>
                                     <?php } ?>
@@ -95,17 +97,17 @@
                                         <tbody>
                                             <tr class="cart-subtotal">
                                                 <th>Subtotal</th>
-                                                <td><span class="amount">$700.00</span></td>
+                                                <td><span class="amount">R$<?php echo formatPrice((float)$cart["vlsubtotal"]); ?></span></td>
                                             </tr>
 
                                             <tr class="shipping">
                                                 <th>Frete</th>
-                                                <td>R$<?php echo formatPrice($cart["vlfreight"]); ?><?php if( $cart["nrdays"] > 0 ){ ?> <small>prazo de <?php echo htmlspecialchars( $cart["nrdays"], ENT_COMPAT, 'UTF-8', FALSE ); ?> dia(s)</small><?php } ?></td>
+                                                <td>R$<?php echo formatPrice((float)$cart["vlfreight"]); ?><?php if( $cart["nrdays"] > 0 ){ ?> <small>prazo de <?php echo htmlspecialchars( $cart["nrdays"], ENT_COMPAT, 'UTF-8', FALSE ); ?> dia(s)</small><?php } ?></td>
                                             </tr>
 
                                             <tr class="order-total">
                                                 <th>Total</th>
-                                                <td><strong><span class="amount">$705.00</span></strong> </td>
+                                                <td><strong><span class="amount">R$<?php echo formatPrice((float)$cart["vltotal"]); ?></span></strong> </td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -6,6 +6,7 @@ use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
 use \Hcode\Model\User;
+use \Hcode\Model\Product;
 
 class Cart extends Model
 {
@@ -39,7 +40,7 @@ class Cart extends Model
 
 					$user = User::getFromSession();
 
-					$data['iduser']= $user->getiduser();
+					$data['iduser'] = $user->getiduser();
 
 				}
 
@@ -183,13 +184,13 @@ class Cart extends Model
 	{
 
 		$sql = new Sql();
-
+		
 		$rows = $sql->select("
-			SELECT b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl, COUNT(*) AS nrqtd, SUM(b.vlprice) AS vltotal
+			SELECT b.idproduct, b.desproduct , b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl, COUNT(*) AS nrqtd, SUM(b.vlprice) AS vltotal 
 			FROM tb_cartsproducts a 
 			INNER JOIN tb_products b ON a.idproduct = b.idproduct 
-			WHERE a.idcart = :idcart AND a.dtremoved IS NULL
-			GROUP BY b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl
+			WHERE a.idcart = :idcart AND a.dtremoved IS NULL 
+			GROUP BY b.idproduct, b.desproduct , b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl 
 			ORDER BY b.desproduct
 			", [
 				':idcart'=>$this->getidcart()
@@ -232,7 +233,7 @@ class Cart extends Model
 	 * [setFreight Serviço (API dos correios) que consulta do valor do frete]
 	 * @param [string] $nrzipcode [numero do cep]
 	 */
-	public function setFreight($nrzipcode)
+	/*public function setFreight($nrzipcode)
 	{
 
 		$nrzipcode = str_replace('-', '', $nrzipcode);
@@ -250,7 +251,48 @@ class Cart extends Model
 
 		}
 
+	}*/
+
+	public function setFreight($nrzipcode)
+	{
+		$nrzipcode = str_replace('-', '', $nrzipcode);
+		$totals = $this->getProductsTotals();
+		if ($totals['nrqtd'] > 0) {
+			if ($totals['vlheight'] < 2) $totals['vlheight'] = 2;
+			if ($totals['vllength'] < 16) $totals['vllength'] = 16;
+			$qs = http_build_query([
+				'nCdEmpresa'=>'',
+				'sDsSenha'=>'',
+				'nCdServico'=>'40010',
+				'sCepOrigem'=>'09853120',
+				'sCepDestino'=>$nrzipcode,
+				'nVlPeso'=>$totals['vlweight'],
+				'nCdFormato'=>'1',
+				'nVlComprimento'=>$totals['vllength'],
+				'nVlAltura'=>$totals['vlheight'],
+				'nVlLargura'=>$totals['vlwidth'],
+				'nVlDiametro'=>'0',
+				'sCdMaoPropria'=>'S',
+				'nVlValorDeclarado'=>$totals['vlprice'],
+				'sCdAvisoRecebimento'=>'S'
+			]);
+			$xml = simplexml_load_file("http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo?".$qs);
+			$result = $xml->Servicos->cServico;
+			if ($result->MsgErro != '') {
+				Cart::setMsgError($result->MsgErro);
+			} else {
+				Cart::clearMsgError();
+			}
+			$this->setnrdays($result->PrazoEntrega);
+			$this->setvlfreight(Cart::formatValueToDecimal($result->Valor));
+			$this->setdeszipcode($nrzipcode);
+			$this->save();
+			return $result;
+		} else {
+		}
 	}
+
+	/*TERMINA*/
 
 	public function updateFreight()
 	{
@@ -283,7 +325,7 @@ class Cart extends Model
 		$totals = $this->getProductsTotals();
 
 		$this->setvlsubtotal($totals['vlprice']);
-		$this->setvltotal($totals['vlprice'] + $this-getvlfreight());
+		$this->setvltotal($totals['vlprice'] + (float)$this->getvlfreight());
 
 	}
 

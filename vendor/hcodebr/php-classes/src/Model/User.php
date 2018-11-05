@@ -217,7 +217,7 @@ class User extends Model
 		);
 	}
 
-	public function getForgot($email)
+	public static function getForgot($email, $inadmin = true)
 	{
 
 		$sql = new Sql();
@@ -272,9 +272,13 @@ class User extends Model
 					)
 				);
 
-				// var_dump($code);
-
-				$link = "http://www.ecommerce.com.br/admin/forgot/reset?code=$code";
+				// Rota para recuperar a senha do Admin
+				if ($inadmin === true) {
+					$link = "http://www.ecommerce.com.br/admin/forgot/reset?code=$code";
+				} else{
+					// Rota para recuperar a senha da loja
+					$link = "http://www.ecommerce.com.br/forgot/reset?code=$code";
+				}			
 
 				$mailer = new Mailer(
 					$data["desemail"], 

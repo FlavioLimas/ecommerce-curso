@@ -302,8 +302,8 @@ $app->get("/profile", function(){
 	$page = new Page();
 	$page->setTpl("profile", [
 		'user'=>$user->getValues(),
-		'profileMsg'=> '',//User::getSuccess(),
-		'profileError'=>''//User::getError()
+		'profileMsg'=>User::getSuccess(),
+		'profileError'=>User::getError()
 	]);
 });
 $app->post("/profile", function(){

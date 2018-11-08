@@ -38,8 +38,11 @@ class Category extends Model
 			)
 		);
 
-		// Setando o valor retornado da procedure
-		$this->setData($results[0]);
+		if (count(results) > 0) {
+
+			// Setando o valor retornado da procedure
+			$this->setData($results[0]);
+		}
 
 		// Atualizando o footer no front com as inforções alteradas das categorias
 		Category::updateFile();
@@ -56,7 +59,11 @@ class Category extends Model
 			]
 		);
 
-		$this->setData($results[0]);
+		if (count(results) > 0) {
+
+			$this->setData($results[0]);
+
+		}
 	}
 
 	public function delete()
